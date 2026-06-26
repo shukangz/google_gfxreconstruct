@@ -69,6 +69,27 @@ if(NOT ANDROID)
     common_build_directives(${TARGET_NAME})
 endif()
 
+# RenderDoc plugin
+set(RDC_TARGET_NAME gfxrecon_renderdoc_replay_plugin)
+add_library(${RDC_TARGET_NAME}
+    MODULE
+        ${CMAKE_CURRENT_LIST_DIR}/renderdoc/renderdoc_replay_plugin.cpp)
+target_include_directories(${RDC_TARGET_NAME}
+    PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/renderdoc)
+target_link_libraries(${RDC_TARGET_NAME}
+    PRIVATE
+        ${GFXR_REPLAY_PLUGIN_ABI_TARGET_NAME}
+        gfxrecon_util)
+
+if(ANDROID)
+    target_link_options(${RDC_TARGET_NAME} PRIVATE "-Wl,-z,max-page-size=16384")
+endif()
+
+if(NOT ANDROID)
+    common_build_directives(${RDC_TARGET_NAME})
+endif()
+
 # Tests
 if(${RUN_TESTS})
     set(TEST_TARGET_NAME gfxrecon_replay_event_plugin_loader_test)
